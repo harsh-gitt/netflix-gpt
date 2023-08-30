@@ -1,17 +1,24 @@
 import React, { useRef, useState } from "react";
 import Browse from "./Browse";
 import Header from "./Header";
+import { checkValidData } from "../utils/validate";
 
 const Login = () => {
   //Toggle Sign in Form Feature
+  const [errMessage, setErrMessage] = useState(null);
   const [isSignInForm, setisSignInForm] = useState(true);
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
 
-  console.log(email.current);
+  const handleClick = () => {
+    //Validate the Form Data
 
-  console.log(email, password, name);
+    const message = checkValidData(email.current.value, password.current.value);
+    setErrMessage(message);
+  };
+
+  // Now Authenticate the Data
 
   return (
     <div>
@@ -23,7 +30,10 @@ const Login = () => {
           className="absolute"
         />
       </div>
-      <form className="w-3/12 p-12 absolute my-24 mx-auto right-0 left-0 bg-black bg-opacity-80">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="w-3/12 p-12 absolute my-24 mx-auto right-0 left-0 bg-black bg-opacity-80"
+      >
         <h1 className="text-3xl text text-white p-2 my-4">
           {isSignInForm ? "Sign In" : "Sign Up"}
         </h1>
@@ -48,11 +58,12 @@ const Login = () => {
           className="p-2 my-2 w-full bg-gray-700 rounded-lg"
           ref={password}
         />
+        <p className="text-red-500 p-2">{errMessage}</p>
         <button
-          onClick={(event) => event.preventDefault()}
+          onClick={handleClick}
           className="p-4 my-4 text-white bg-red-700 w-full rounded-lg font-bold"
         >
-          Sign In
+          {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
         <p
           onClick={() => {
