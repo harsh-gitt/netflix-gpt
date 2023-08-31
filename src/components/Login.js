@@ -2,6 +2,11 @@ import React, { useRef, useState } from "react";
 import Browse from "./Browse";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth"; // From Firebase API's
+import { auth } from "../firebase";
 
 const Login = () => {
   //Toggle Sign in Form Feature
@@ -16,6 +21,45 @@ const Login = () => {
 
     const message = checkValidData(email.current.value, password.current.value);
     setErrMessage(message);
+    if (message) return;
+
+    //SignIn SignUp Logic
+    if (!isSignInForm) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrMessage(errorCode + "" + errMessage);
+          // ..
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrMessage(errorCode + "" + errMessage);
+        });
+    }
   };
 
   // Now Authenticate the Data
